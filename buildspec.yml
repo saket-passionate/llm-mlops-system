@@ -34,6 +34,4 @@ phases:
 
   artifacts:
     files: 
-      - imagedefinitions.json
-    discard-paths: yes
-    base-directory: /codebuild/outputs/src/aws/llm_rag_system/builds/${CODEBUILD_BUILD_ID}    
+      - **/*
