@@ -1,6 +1,6 @@
 version: 0.2
 
-environment:
+env:
   variables:
     REGION: "ca-central-1"
     ECR_REPOSITORY: "stablelm-inference"
@@ -32,6 +32,6 @@ phases:
       - docker push $IMAGE_URI
       - echo Writing image definitions file...
 
-  artifacts:
-    files: 
-      - '**/*'
+artifacts:
+  files: 
+    - '**/*'
