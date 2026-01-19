@@ -3,7 +3,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
-MODEL_DIR = "opt/ml/model"
+MODEL_DIR = "/opt/ml/model"
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -12,7 +12,11 @@ def model_fn(model_dir):
     Load the model for inference.
     """
     print("Loading model from {}".format(model_dir))
-    tokenizer = AutoTokenizer.from_pretrained(model_dir)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_dir,
+        use_fast=True
+        )
+    
     model = AutoModelForCausalLM.from_pretrained(
         model_dir,
         torch_dtype=torch.float16 if device == "cuda" else torch.float32,

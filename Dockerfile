@@ -10,7 +10,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY /deploy/inference.py .
 
 ENV HF_HOME=/tmp/huggingface
-ENV TRANSFORMERS_CACHE=/tmp/huggingface
+ENV XDG_CACHE_HOME=/tmp/huggingface
+ENV HF_METRICS_CACHE=/tmp/huggingface/metrics
+ENV HF_MODULES_CACHE=/tmp/huggingface/modules
+ENV HF_TOKENIZERS_CACHE=/tmp/huggingface/tokenizers
+ENV HF_TRANSFORMERS_CACHE=/tmp/huggingface/transformers
+ENV HF_HUB_CACHE=/tmp/huggingface/hub
 ENV HF_DATASETS_CACHE=/tmp/huggingface/datasets
+
 
 ENTRYPOINT ["python", "inference.py"]
