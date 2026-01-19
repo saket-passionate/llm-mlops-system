@@ -1,5 +1,5 @@
-transformers
-torch
+transformers==4.37.0
+torch==2.0.1
 accelerate
 sentencepiece
 huggingface_hub
