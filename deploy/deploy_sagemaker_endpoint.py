@@ -42,8 +42,8 @@ sagemaker.create_model(
         'Image': ECR_IMAGE_URI,
         'ModelDataUrl': MODEL_DATA_URI,
         'Environment': {
-            'TRANSFORMERS_CACHE': '/opt/ml/model' ,
-            'HF_HOME': '/opt/ml/model'     
+            'TRANSFORMERS_CACHE': '/tmp/huggingface/transformers' ,
+            'HF_HOME': '/tmp/huggingface' ,  
         }     
     },
     ExecutionRoleArn=EXECUTION_ROLE_ARN
