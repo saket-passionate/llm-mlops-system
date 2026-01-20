@@ -1,6 +1,11 @@
+import os
 import json
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Tranformer Config
+os.environ['TRANSFORMERS_CACHE'] = '/tmp/huggingface/transformers'
+os.environ['HF_HOME'] = '/tmp/huggingface'
 
 
 MODEL_DIR = "/opt/ml/model"
@@ -14,7 +19,8 @@ def model_fn(model_dir):
     print("Loading model from {}".format(model_dir))
     tokenizer = AutoTokenizer.from_pretrained(
         model_dir,
-        use_fast=True
+        use_fast=True,
+        local_files_only=True,
         )
     
     model = AutoModelForCausalLM.from_pretrained(
@@ -22,11 +28,12 @@ def model_fn(model_dir):
         torch_dtype=torch.float16 if device == "cuda" else torch.float32,
         low_cpu_mem_usage=True,
         device_map="auto" if device == "cuda" else None,
+        local_files_only=True,
+        trust_remote_code=True,
         )
     
-    model.to(device)
     model.eval()
-    return tokenizer, model
+    return (tokenizer, model)
 
 def input_fn(request_body, request_content_type):
     """

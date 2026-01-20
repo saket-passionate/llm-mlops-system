@@ -22,7 +22,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t stablelm-inference:latest .
+      - docker build --no-cache -t stablelm-inference .
       - docker tag stablelm-inference:latest $IMAGE_URI
 
   post_build:

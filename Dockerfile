@@ -19,4 +19,5 @@ ENV HF_HUB_CACHE=/tmp/huggingface/hub
 ENV HF_DATASETS_CACHE=/tmp/huggingface/datasets
 
 
+# SageMaker-required entrypoint
 ENTRYPOINT ["python", "inference.py"]
