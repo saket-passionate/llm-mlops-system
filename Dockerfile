@@ -19,4 +19,4 @@ ENV HF_DATASETS_CACHE=/tmp/huggingface/datasets
 
 
 # SageMaker-required entrypoint
-ENTRYPOINT ["python", "-m", "sagemaker-inference"]
+ENTRYPOINT ["python", "-m", "sagemaker_inference"]
