@@ -7,7 +7,6 @@ WORKDIR /opt/ml/code
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY /deploy/inference.py .
 
 ENV HF_HOME=/tmp/huggingface
 ENV XDG_CACHE_HOME=/tmp/huggingface
@@ -20,4 +19,4 @@ ENV HF_DATASETS_CACHE=/tmp/huggingface/datasets
 
 
 # SageMaker-required entrypoint
-ENTRYPOINT ["python", "inference.py"]
+ENTRYPOINT ["python", "-m", "sagemaker-inference"]
