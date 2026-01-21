@@ -8,13 +8,6 @@ mkdir -p ./models/stablelm-3b/code
 hf download stabilityai/stablelm-3b-4e1t \
   --local-dir ./models/stablelm-3b
 
-echo "Preparing Sagemaker Model Structure..."
-
-# Copy inference script to model directory
-cp deploy/inference.py ./models/stablelm-3b/code/
-
-# requirements.txt for SageMaker inference environment
-cp requirements.txt ./models/stablelm-3b/code/
 echo "Creating model tar.gz for SageMaker..."
 
 ## Package the model into a tar.gz file for sageMaker deployment

@@ -1,59 +1,37 @@
 import os
 import json
 import torch
+import uvicorn
+from fastapi import FastAPI, Request, Response
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-# Tranformer Config
+# Transformer Config
 os.environ['TRANSFORMERS_CACHE'] = '/tmp/huggingface/transformers'
 os.environ['HF_HOME'] = '/tmp/huggingface'
 
+app = FastAPI()
+MODEL_OBJECT = None
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-MODEL_DIR = "/opt/ml/model"
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
+# --- Your Existing Logic Integrated ---
 
 def model_fn(model_dir):
-    """
-    Load the model for inference.
-    """
-    print("Loading model from {}".format(model_dir))
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_dir,
-        use_fast=True,
-        local_files_only=True,
-        )
-    
+    print(f"Loading model from {model_dir}")
+    tokenizer = AutoTokenizer.from_pretrained(model_dir, use_fast=True, local_files_only=True)
     model = AutoModelForCausalLM.from_pretrained(
         model_dir,
-        torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+        torch_dtype=torch.float16 if DEVICE == "cuda" else torch.float32,
         low_cpu_mem_usage=True,
-        device_map="auto" if device == "cuda" else None,
+        device_map="auto" if DEVICE == "cuda" else None,
         local_files_only=True,
         trust_remote_code=True,
-        )
-    
+    )
     model.eval()
     return (tokenizer, model)
 
-def input_fn(request_body, request_content_type):
-    """
-    Deserialize the request body.
-    """
-    if request_content_type == "application/json":
-        request = json.loads(request_body)
-        return request["inputs"]
-    else:
-        raise ValueError("Unsupported content type: {}".format(request_content_type))
-
-def predict_fn(input_data, model):
-    """
-    Perform inference on the input data.
-    """
-    
-    tokenizer, model = model
-    inputs = tokenizer(input_data, return_tensors="pt").to(
-        device
-    )
+def predict_fn(input_data, model_tuple):
+    tokenizer, model = model_tuple
+    inputs = tokenizer(input_data, return_tensors="pt").to(DEVICE)
     
     with torch.no_grad():
         outputs = model.generate(
@@ -64,15 +42,43 @@ def predict_fn(input_data, model):
             temperature=0.6,
             repetition_penalty=1.2,
         )
-    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return generated_text
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
+# --- SageMaker Lifecycle Endpoints ---
 
-def output_fn(prediction, response_content_type):
-    """
-    Serialize the prediction output.
-    """
-    if response_content_type == "application/json":
-        return json.dumps({"generated_text": prediction})
-    else:
-        raise ValueError("Unsupported content type: {}".format(response_content_type))
+@app.on_event("startup")
+def startup_event():
+    """Load model once on container startup."""
+    global MODEL_OBJECT
+    model_dir = os.environ.get("SM_MODEL_DIR", "/opt/ml/model")
+    MODEL_OBJECT = model_fn(model_dir)
+
+@app.get("/ping")
+def ping():
+    """Health check endpoint."""
+    health = MODEL_OBJECT is not None
+    return Response(content="\n", status_code=200 if health else 503)
+
+@app.post("/invocations")
+async def invocations(request: Request):
+    """Inference endpoint."""
+    # 1. Validate Content-Type
+    if request.headers.get("Content-Type") != "application/json":
+        return Response(content="Support only application/json", status_code=415)
+
+    # 2. Get Input (input_fn logic)
+    body = await request.json()
+    prompt = body.get("inputs")
+    
+    # 3. Predict (predict_fn logic)
+    prediction = predict_fn(prompt, MODEL_OBJECT)
+    
+    # 4. Return Output (output_fn logic)
+    return Response(
+        content=json.dumps({"generated_text": prediction}),
+        media_type="application/json"
+    )
+
+if __name__ == "__main__":
+    # SageMaker expects the container to listen on port 8080
+    uvicorn.run(app, host="0.0.0.0", port=8080)
