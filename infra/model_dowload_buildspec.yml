@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  variables:
+    REGION: "ca-central-1"
+    ECR_REPOSITORY: "stablelm-3b-inference"
+    IMAGE_REPO_NAME: "stablelm-3b-inference"
+    AWS_ACCOUNT_ID: "252312373833"
+    MODEL_BUCKET_NAME: "llmmlopsstack-llmmodelbucketece4678b-w6dy6zds3hxs"
+
+phases:
+  pre_build:
+    commands: 
+      - pip install --upgrade pip
+      - pip install huggingface_hub 
+      - Dowloading model from Hugging Face...
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Downloading and packaging the model...
+      - echo clean working directory
+      - hf download stabilityai/stablelm-3b-4e1t --local-dir ../models/stablelm-3b
+      - cd ../models/stablelm-3b 
+      - tar -czvf ../stablelm-3b-model.tar.gz *
+
+  
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Uploading model to S3 bucket...
+      - aws s3 cp ../models/stablelm-3b-model.tar.gz s3://$MODEL_BUCKET_NAME/models/stablelm-3b/ 
+      - echo Model upload completed.  
+
+artifacts:
+  files: 
+    - '**/*'
+
+
+   

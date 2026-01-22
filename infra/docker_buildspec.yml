@@ -1,0 +1,37 @@
+version: 0.2
+
+env:
+  variables:
+    REGION: "ca-central-1"
+    ECR_REPOSITORY: "stablelm-3b-inference"
+    IMAGE_REPO_NAME: "stablelm-3b-inference"
+    AWS_ACCOUNT_ID: "252312373833"
+
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $REGION | docker login --username AWS
+        --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
+      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY
+      - IMAGE_URI=$REPOSITORY_URI:latest
+  
+  
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build --no-cache -t stablelm-3b-inference .
+      - docker tag stablelm-3b-inference:latest $IMAGE_URI
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $IMAGE_URI
+      - echo Writing image definitions file...
+
+artifacts:
+  files: 
+    - '**/*'
