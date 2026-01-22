@@ -5,6 +5,9 @@ fastapi
 uvicorn
 sagemaker_inference
 boto3
+gradio
 accelerate
 sentencepiece
 huggingface_hub
+aws-cdk-lib
+

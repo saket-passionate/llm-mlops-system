@@ -13,7 +13,7 @@ ENDPOINT_NAME = 'stablelm-3b-endpoint'
 ECR_IMAGE_URI = f'{ACCOUNT_ID}.dkr.ecr.{REGION}.amazonaws.com/stablelm-inference:latest'
 MODEL_DATA_URI = "s3://llm-rag-bucket-ca-central/models/stablelm-3b/stablelm-3b-model.tar.gz"
 
-INSTANCE_TYPE = 'ml.g5.xlarge'
+INSTANCE_TYPE = 'ml.g5.4xlarge'  # GPU instance for inference
 
 ## Create Sagemaker Execution Role ARN
 
@@ -67,6 +67,7 @@ sagemaker.create_endpoint_config(
             'ModelName': MODEL_NAME,
             'InstanceType': INSTANCE_TYPE,
             'InitialInstanceCount': 1,
+            'ContainerStartupHealthCheckTimeoutInSeconds': 600 # CRITICAL
         },
     ]   
 )   
