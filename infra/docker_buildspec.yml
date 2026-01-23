@@ -1,12 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    REGION: "ca-central-1"
-    ECR_REPOSITORY: "stablelm-3b-inference"
-    IMAGE_REPO_NAME: "stablelm-3b-inference"
-    AWS_ACCOUNT_ID: "252312373833"
-
 
 phases:
   pre_build:
@@ -22,8 +15,8 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build --no-cache -t stablelm-3b-inference .
-      - docker tag stablelm-3b-inference:latest $IMAGE_URI
+      - docker build --no-cache -t $IMAGE_NAME .
+      - docker tag $IMAGE_NAME:latest $IMAGE_URI
 
   post_build:
     commands:

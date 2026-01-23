@@ -5,7 +5,7 @@ from aws_cdk import (
     aws_lambda as _lambda,
     aws_ecr as ecr,
     aws_codebuild as codebuild,
-    aws_codepipeline_actions as codepipeline_actions
+    RemovalPolicy
     )
 from constructs import Construct    
 
@@ -41,8 +41,12 @@ class LLmMlopsStack(Stack):
         )         
 
         # ECR Repository for Docker Image
-        ecr_repository = ecr.Repository.from_repository_name(
-            self, "LLMECRRepository", "stablelm-3b-inference"
+        ecr_repository = ecr.Repository(
+            self, "LLMECRRepository",
+            repository_name="llm-ecr-repo",
+            image_scan_on_push=True,
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_images=True,
         )
 
         ecr_repository.grant_pull(sagemaker_role)
@@ -87,7 +91,22 @@ class LLmMlopsStack(Stack):
             ),
             build_spec=codebuild.BuildSpec.from_source_filename(
                 "infra/docker_buildspec.yml"
-            )
+            ),
+            environment_variables={
+                "ECR_REPOSITORY": codebuild.BuildEnvironmentVariable(
+                    value=ecr_repository.repository_name
+                ),
+                "AWS_ACCOUNT_ID": codebuild.BuildEnvironmentVariable(
+                    value=self.account
+                ),          
+                "REGION": codebuild.BuildEnvironmentVariable(
+                    value=self.region
+                ),
+                "IMAGE_NAME": codebuild.BuildEnvironmentVariable(
+                    value="stablelm-3b-inference"
+                )
+
+            }
         )
         
         ecr_repository.grant_pull_push(codebuild_project.role)
