@@ -86,7 +86,7 @@ class LLmMlopsStack(Stack):
                 privileged=True
             ),
             build_spec=codebuild.BuildSpec.from_source_filename(
-                "/infra/docker_buildspec.yml"
+                "infra/docker_buildspec.yml"
             )
         )
         
@@ -106,7 +106,7 @@ class LLmMlopsStack(Stack):
                 privileged=True
             ),
             build_spec=codebuild.BuildSpec.from_source_filename(
-                "/infra/model_download_buildspec.yml"
+                "infra/model_download_buildspec.yml"
             )
         )
 

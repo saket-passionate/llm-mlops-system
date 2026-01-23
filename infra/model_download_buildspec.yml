@@ -20,17 +20,14 @@ phases:
       - echo Build started on `date`
       - echo Downloading and packaging the model...
       - echo clean working directory
-      - hf download stabilityai/stablelm-3b-4e1t --local-dir ../models/stablelm-3b
-      - cd ../models/stablelm-3b 
-      - tar -czvf ../stablelm-3b-model.tar.gz *
+      - bash ../scripts/package_model.sh $MODEL_BUCKET_NAME
+      - echo Model packaging completed.
 
   
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Uploading model to S3 bucket...
-      - aws s3 cp ../models/stablelm-3b-model.tar.gz s3://$MODEL_BUCKET_NAME/models/stablelm-3b/ 
-      - echo Model upload completed.  
 
 artifacts:
   files: 
