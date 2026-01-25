@@ -4,6 +4,8 @@ set -e
 # ----------- VARIABLES ----------
 echo "🚀 Welcome to the StableLM-3B model downloader!"
 
+S3_MODEL_PATH="s3://${MODEL_BUCKET_NAME}/models/stablelm-3b/model.tar.gz"
+
 cd $CODEBUILD_SRC_DIR
 
 # Clean workspace
