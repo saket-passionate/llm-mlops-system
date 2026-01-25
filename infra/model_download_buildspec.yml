@@ -13,7 +13,6 @@ phases:
     commands: 
       - pip install --upgrade pip
       - pip install huggingface_hub 
-      - Dowloading model from Hugging Face...
 
   build:
     commands:
