@@ -1,23 +1,28 @@
-echo "Welcome to the StableLM-3B model downloader!"
+#!/bin/bash
+set -e
 
-# Clean Workspace
-rm -rf ../models/
+echo "🚀 Welcome to the StableLM-3B model downloader!"
+
+cd $CODEBUILD_SRC_DIR
+
+# Clean workspace
+rm -rf models
+mkdir -p models
 cd models
 
+echo "📥 Downloading StableLM-3B-4E1T from Hugging Face..."
 
-# Download StableLM-3B-4E1T model from Hugging Face
 hf download stabilityai/stablelm-3b-4e1t \
-  --local-dir ./models/stablelm-3b
+  --local-dir stablelm-3b
 
-## Package the model into a tar.gz file for sageMaker deployment
-cd models/stablelm-3b
-tar -czvf ../stablelm-3b-model.tar.gz *
+echo "📦 Packaging model..."
 
-aws s3 cp ../models/stablelm-3b-model.tar.gz s3://$MODEL_BUCKET_NAME/models/stablelm-3b/
+cd stablelm-3b
+tar -czvf ../stablelm-3b-model.tar.gz .
 
-echo "Model downloaded and uploaded to S3 successfully!"
+echo "☁️ Uploading model to S3..."
 
+aws s3 cp ../stablelm-3b-model.tar.gz \
+  s3://${MODEL_BUCKET_NAME}/models/stablelm-3b/model.tar.gz
 
-
-
-
+echo "✅ Model downloaded and uploaded successfully!"

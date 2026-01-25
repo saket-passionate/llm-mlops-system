@@ -78,7 +78,7 @@ class LLmMlopsStack(Stack):
 
         
         # CodeBuild Project to build and push Docker image to ECR
-        codebuild_project = codebuild.Project(
+        codebuild_docker_job = codebuild.Project(
             self, "stablelm-3b-docker-build",
             source=codebuild.Source.git_hub(
                 owner="saket-passionate",
@@ -108,12 +108,12 @@ class LLmMlopsStack(Stack):
 
             }
         )
-        
-        ecr_repository.grant_pull_push(codebuild_project.role)
-        model_bucket.grant_read_write(codebuild_project.role)
+
+        ecr_repository.grant_pull_push(codebuild_docker_job.role)
+        model_bucket.grant_read_write(codebuild_docker_job.role)
 
         # CodePipeline to download model and upload to S3
-        codebuild_project_model = codebuild.Project(
+        codebuild_model_dowload = codebuild.Project(
             self, "stablelm-3b-model-upload",
             source=codebuild.Source.git_hub(
                 owner="saket-passionate",
@@ -129,7 +129,7 @@ class LLmMlopsStack(Stack):
             )
         )
 
-        codebuild_project.add_to_role_policy(
+        codebuild_model_dowload.add_to_role_policy(
             iam.PolicyStatement(
                 actions=[
                     "codeconnections:GetConnection",
@@ -141,7 +141,7 @@ class LLmMlopsStack(Stack):
                 ],
             )
         )
-        codebuild_project_model.add_to_role_policy(
+        codebuild_model_dowload.add_to_role_policy(
             iam.PolicyStatement(
                 actions=[
                     "codeconnections:GetConnection",
@@ -154,8 +154,8 @@ class LLmMlopsStack(Stack):
             )
         )
 
-        ecr_repository.grant_pull_push(codebuild_project_model.role)
-        model_bucket.grant_read_write(codebuild_project_model.role)
+        ecr_repository.grant_pull_push(codebuild_model_dowload.role)
+        model_bucket.grant_read_write(codebuild_model_dowload.role)
 
         
 
