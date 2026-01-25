@@ -19,14 +19,14 @@ phases:
       - echo Build started on `date`
       - echo Downloading and packaging the model...
       - echo clean working directory
-      - bash ../scripts/package_model.sh $MODEL_BUCKET_NAME
+      - bash scripts/package_model.sh $MODEL_BUCKET_NAME
       - echo Model packaging completed.
 
   
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Uploading model to S3 bucket...
+      - echo Uploaded model to S3 bucket...
 
 artifacts:
   files: 
