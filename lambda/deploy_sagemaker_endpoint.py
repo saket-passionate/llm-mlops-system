@@ -19,6 +19,16 @@ EXECUTION_ROLE_ARN = os.environ["SAGEMAKER_ROLE_ARN"]
 def handler(event, context):
     sagemaker = boto3.client('sagemaker', region_name=REGION)
 
+    # Check if model exists and delete
+    try:
+        sagemaker.delete_model(ModelName=MODEL_NAME)
+        print("Model deleted.")
+    except sagemaker.exceptions.ClientError as e:
+        if "Could not find model" in str(e):
+            print("Model does not exist, skipping deletion.")
+        else:
+            raise   
+
     # Create Model
     print("Creating SageMaker model...")
     sagemaker.create_model(
@@ -35,6 +45,16 @@ def handler(event, context):
     )
     print("Model created.")
 
+    # Check if endpoint config exists and delete
+    try:
+        sagemaker.delete_endpoint_config(EndpointConfigName=ENDPOINT_CONFIG_NAME)
+        print("Endpoint configuration deleted.")
+    except sagemaker.exceptions.ClientError as e:
+        if "Could not find endpoint configuration" in str(e):
+            print("Endpoint configuration does not exist, skipping deletion.")
+        else:
+            raise       
+
     # Create Endpoint Configuration
     print("Creating endpoint configuration...")
     sagemaker.create_endpoint_config(
@@ -49,6 +69,17 @@ def handler(event, context):
         ]
     )
     print("Endpoint configuration created.")
+
+    # Check if endpoint exists and delete
+    try:
+        sagemaker.delete_endpoint(EndpointName=ENDPOINT_NAME)
+        print("Endpoint deleted.")
+        time.sleep(120)  # Wait for deletion to complete
+    except sagemaker.exceptions.ClientError as e:
+        if "Could not find endpoint" in str(e):
+            print("Endpoint does not exist, skipping deletion.")
+        else:
+            raise       
 
     # Create Endpoint
     print("Creating SageMaker endpoint...")

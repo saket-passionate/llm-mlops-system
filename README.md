@@ -39,7 +39,7 @@ This architecture is directly applicable to:
 
 ## 🏗️ System Architecture
 
-![System Architecture Diagram](ml_system_diagram.png)
+![System Architecture Diagram](llm_system_diagram.png)
 
 **High-level flow:**
 - Hugging Face → Local / CLI

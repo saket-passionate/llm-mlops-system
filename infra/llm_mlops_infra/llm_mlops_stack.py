@@ -64,7 +64,7 @@ class LLmMlopsStack(Stack):
             environment={
                 "SAGEMAKER_ROLE_ARN": sagemaker_role.role_arn,
                 "ECR_IMAGE_URI": ecr_repository.repository_uri + ":latest",
-                "MODEL_DATA_URI": f"s3://{model_bucket.bucket_name}/models/stablelm-3b/stablelm-3b-model.tar.gz",
+                "MODEL_DATA_URI": f"s3://{model_bucket.bucket_name}/models/stablelm-3b/stable-3b-model.tar.gz",
                 "MODEL_NAME": "stablelm-3b-model",
                 "ENDPOINT_CONFIG_NAME": "stablelm-3b-endpoint-config",
                 "ENDPOINT_NAME": "stablelm-3b-endpoint",
@@ -83,6 +83,7 @@ class LLmMlopsStack(Stack):
                     "sagemaker:DescribeEndpoint",
                     "sagemaker:DeleteModel",
                     "sagemaker:DeleteEndpointConfig",
+                    "sagemaker:DeleteEndpoint"
                 ],
                 resources=["*"],
             )
@@ -149,7 +150,7 @@ class LLmMlopsStack(Stack):
             ),
             environment_variables={
                 "S3_MODEL_PATH": codebuild.BuildEnvironmentVariable(
-                    value="s3://{model_bucket.bucket_name}/models/stablelm-3b/stablelm-3b-model.tar.gz"
+                    value="s3://{model_bucket.bucket_name}/models/stablelm-3b/stable-3b-model.tar.gz"
                 ),
             }
         )
