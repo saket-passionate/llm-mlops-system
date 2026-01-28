@@ -9,6 +9,10 @@ It is a **real, deployable LLM system** designed for scalability, governance, an
 
 ---
 
+## 🏗️ System Architecture
+
+![System Architecture Diagram](llm_system_diagram.png)
+
 ## 🚀 What This System Does
 
 **System Summary**
@@ -36,10 +40,6 @@ This architecture is directly applicable to:
 - Teams that need **full control** over models, images, and deployment
 
 ---
-
-## 🏗️ System Architecture
-
-![System Architecture Diagram](llm_system_diagram.png)
 
 **High-level flow:**
 - Hugging Face → Local / CLI
