@@ -4,8 +4,7 @@ set -e
 # ----------- VARIABLES ----------
 echo "🚀 Welcome to the StableLM-3B model downloader!"
 
-S3_MODEL_PATH="s3://${MODEL_BUCKET_NAME}/models/stablelm-3b/model.tar.gz"
-
+echo "S3 Model Path is: $S3_MODEL_PATH"
 cd $CODEBUILD_SRC_DIR
 
 # Clean workspace
@@ -41,6 +40,7 @@ tar -czvf ../stablelm-3b-model.tar.gz .
 echo "☁️ Uploading model to S3..."
 
 aws s3 cp ../stablelm-3b-model.tar.gz \
-  s3://${MODEL_BUCKET_NAME}/models/stablelm-3b/model.tar.gz
+  s3://${MODEL_BUCKET_NAME}/models/stablelm-3b/stable-3b-model.tar.gz
 
 echo "✅ Model downloaded and uploaded successfully!"
+

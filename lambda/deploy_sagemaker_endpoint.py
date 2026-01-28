@@ -1,16 +1,20 @@
 import boto3
 import time
+import os
 
 # ===============================
 # Configuration
 # ===============================
-ENDPOINT_NAME = "stablelm-3b-endpoint"
-ENDPOINT_CONFIG_NAME = "stablelm-3b-endpoint-config"
-MODEL_NAME = "stablelm-3b-model"
-MODEL_DATA_URI = "s3://llm-mlops-bucket-ca-central/models/stablelm-3b/stablelm-3b-model.tar.gz"
-ECR_IMAGE_URI = "252312373833.dkr.ecr.ca-central-1.amazonaws.com/stablelm-inference:latest"
-REGION = "ca-central-1"
-ACCOUNT_ID = "252312373833"             
+
+ENDPOINT_CONFIG_NAME = os.environ["ENDPOINT_CONFIG_NAME"]
+ENDPOINT_NAME = os.environ["ENDPOINT_NAME"]
+MODEL_NAME = os.environ["MODEL_NAME"]
+MODEL_DATA_URI = os.environ["MODEL_DATA_URI"]
+ECR_IMAGE_URI = os.environ["ECR_IMAGE_URI"]
+REGION = os.environ["REGION"]
+ACCOUNT_ID = os.environ["ACCOUNT_ID"]
+EXECUTION_ROLE_ARN = os.environ["SAGEMAKER_ROLE_ARN"]
+       
 
 def handler(event, context):
     sagemaker = boto3.client('sagemaker', region_name=REGION)
@@ -27,7 +31,7 @@ def handler(event, context):
                 'HF_HOME': '/tmp/huggingface',
             }
         },
-        ExecutionRoleArn=f'arn:aws:iam::{ACCOUNT_ID}:role/LLMSageMakerExecutionRole'
+        ExecutionRoleArn=EXECUTION_ROLE_ARN
     )
     print("Model created.")
 

@@ -1,0 +1,37 @@
+# Model artifacts and large files
+models/**/*.safetensors
+models/**/*.bin
+models/**/*.pt
+models/**/*.pth
+*.tar.gz
+*.zip
+
+# Hugging Face cache
+.cache/
+huggingface/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local downloads and build artifacts
+download/
+temp/
+.tmp/
