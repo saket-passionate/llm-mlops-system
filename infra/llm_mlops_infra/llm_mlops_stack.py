@@ -233,7 +233,7 @@ class LLmMlopsStack(Stack):
         source_output = codepipeline.Artifact()
 
         pipeline = codepipeline.Pipeline(
-            self, "GenAICodePipeline",
+            self, "LLMCodePipeline",
             
             stages=[
                 codepipeline.StageProps(
@@ -249,6 +249,16 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),      
+                codepipeline.StageProps(
+                    stage_name="BuildAndPushGradioImage",
+                    actions=[
+                        codepipeline_actions.CodeBuildAction(
+                            action_name="BuildAndPushGradioImage",
+                            project=codebuild_gradio_job,
+                            input=source_output, 
+                        )
+                    ],
+                ),
                 
                 codepipeline.StageProps(
                     stage_name="BuildAndPushDockerImage",
@@ -256,16 +266,6 @@ class LLmMlopsStack(Stack):
                         codepipeline_actions.CodeBuildAction(
                             action_name="BuildAndPushDockerImage",
                             project=codebuild_docker_job,
-                            input=source_output, 
-                        )
-                    ],
-                ),
-                codepipeline.StageProps(
-                    stage_name="BuildAndPushGradioImage",
-                    actions=[
-                        codepipeline_actions.CodeBuildAction(
-                            action_name="BuildAndPushGradioImage",
-                            project=codebuild_gradio_job,
                             input=source_output, 
                         )
                     ],
