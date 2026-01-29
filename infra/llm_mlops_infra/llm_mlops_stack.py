@@ -138,6 +138,9 @@ class LLmMlopsStack(Stack):
                     "ecr:GetDownloadUrlForLayer",
                     "ecr:BatchGetImage",
                     "ecr:InitiateLayerUpload",
+                    "ecr:UploadLayerPart",
+                    "ecr:CompleteLayerUpload",
+                    "ecr:PutImage",
                     
                 ],
                 resources=["*"],    
@@ -235,7 +238,7 @@ class LLmMlopsStack(Stack):
         source_output = codepipeline.Artifact()
 
         pipeline = codepipeline.Pipeline(
-            self, "LLMCodePipeline",
+            self, "GenAICodePipeline",
             
             stages=[
                 codepipeline.StageProps(
