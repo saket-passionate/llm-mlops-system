@@ -1,11 +1,11 @@
 # LLM MLOps System on AWS (Custom Hugging Face Model)
 
-A **production-grade, end-to-end LLM MLOps system** built on AWS using a **custom Hugging Face Large Language Model (StableLM-3B)** — without Amazon Bedrock.
+A **end-to-end LLM MLOps system** built on AWS using a **custom Hugging Face Large Language Model (StableLM-3B)** — without Amazon Bedrock.
 
-This platform demonstrates how to **download, package, deploy, host, monitor, and operate an LLM in production** using AWS-native services and MLOps best practices.
+This platform demonstrates how to **download, package, deploy, host, and operate an LLM model in production** using AWS-native services and MLOps best practices.
 
 This is **not a notebook demo**.  
-It is a **real, deployable LLM system** designed for scalability, governance, and reliability.
+It is a **real, deployable LLM system** designed for scalability, and reliability.
 
 ---
 
@@ -19,7 +19,7 @@ It is a **real, deployable LLM system** designed for scalability, governance, an
 
 This platform:
 - Downloads a Hugging Face LLM (StableLM-3B)
-- Packages and uploads the model to Amazon S3
+- Packages and uploads the model to Amazon S3 Bucket
 - Builds a custom GPU inference Docker image
 - Pushes the image to Amazon ECR
 - Deploys the model to Amazon SageMaker
@@ -33,7 +33,7 @@ This platform:
 
 This architecture is directly applicable to:
 
-- Custom LLM hosting (no Bedrock dependency)
+- Custom LLM hosting (no Bedrock dependency, using BYOC approach!)
 - RAG systems using private data
 - Enterprise AI platforms with governance requirements
 - Cost-controlled LLM inference on AWS
