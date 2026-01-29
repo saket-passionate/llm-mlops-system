@@ -14,8 +14,7 @@ from aws_cdk import (
     
     )
 from constructs import Construct
-
-from llm_mlops_infra.ecs_gradio_stack import GradioEcsStack    
+  
 
 class LLmMlopsStack(Stack):
 
@@ -70,10 +69,6 @@ class LLmMlopsStack(Stack):
             auto_delete_images=True,
             )
 
-        ecr_gradio_repository.grant_pull(cluster)   
-        ecr_gradio_repository.grant_pull(sagemaker_role)
-        ecr_gradio_repository.grant_pull(codebuild_gradio_job.role)
-        ecr_gradio_repository.grant_push(codebuild_gradio_job.role)
 
 
         # Lambda function to deploy SageMaker Endpoint
@@ -136,7 +131,7 @@ class LLmMlopsStack(Stack):
             ),
             environment_variables={
                 "ECR_REPOSITORY": codebuild.BuildEnvironmentVariable(
-                    value="gradio-sagemaker-inference"
+                    value=ecr_gradio_repository.repository_name
                 ),
                 "AWS_ACCOUNT_ID": codebuild.BuildEnvironmentVariable(
                     value=self.account
@@ -351,12 +346,12 @@ class LLmMlopsStack(Stack):
 
         # Create ECS Gradio Stack
        
-
         # VPC
         vpc = ec2.Vpc(self, "GradioVpc", max_azs=2, nat_gateways=1)
 
         # ECS Cluster
         cluster = ecs.Cluster(self, "GradioCluster", vpc=vpc)
+
 
         # Task Definition
         task_definition = ecs.FargateTaskDefinition(
@@ -423,6 +418,8 @@ class LLmMlopsStack(Stack):
 
         # Output
         self.gradio_service_url = fargate_service.load_balancer.load_balancer_dns_name
+
+        
 
 
 
