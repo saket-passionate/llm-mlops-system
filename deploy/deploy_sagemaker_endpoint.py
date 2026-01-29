@@ -4,7 +4,8 @@ import time
 ## Configure these variables as needed
 REGION = 'ca-central-1'
 ACCOUNT_ID = boto3.client('sts').get_caller_identity().get('Account')  
-BUCKET_NAME = 'llm-rag-bucket-ca-central'          
+BUCKET_NAME = 'llm-rag-bucket-ca-central' 
+         
 
 MODEL_NAME = 'stablelm-3b-model'
 ENDPOINT_CONFIG_NAME = 'stablelm-3b-config'
