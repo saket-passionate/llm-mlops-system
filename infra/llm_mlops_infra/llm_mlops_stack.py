@@ -137,6 +137,8 @@ class LLmMlopsStack(Stack):
                     "ecr:BatchCheckLayerAvailability",
                     "ecr:GetDownloadUrlForLayer",
                     "ecr:BatchGetImage",
+                    "ecr:InitiateLayerUpload",
+                    
                 ],
                 resources=["*"],    
             )
