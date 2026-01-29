@@ -125,7 +125,7 @@ class LLmMlopsStack(Stack):
                     value=self.region
                 ),
                 "IMAGE_NAME": codebuild.BuildEnvironmentVariable(
-                    value="gradio-UI"
+                    value="gradio-ui"
                 )
             }
         )
@@ -259,7 +259,7 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),
-                
+
                 codepipeline.StageProps(
                     stage_name="BuildAndPushDockerImage",
                     actions=[
