@@ -11,9 +11,9 @@ sys.path.append(os.path.abspath(".."))
 # Configuration
 # ===============================
 
-ENDPOINT_NAME = os.environ.get("SM_ENDPOINT_NAME", "stablelm-3b-endpoint")
-REGION= os.environ.get("AWS_REGION", "ca-central-1")
-BUCKET_NAME = os.environ.get("S3_BUCKET_NAME", "llm-rag-bucket-ca-central")
+ENDPOINT_NAME = os.environ["SAGEMAKER_ENDPOINT_NAME"]
+REGION= os.environ["AWS_REGION"]
+
 
 
 # Create SageMaker runtime client
@@ -90,4 +90,4 @@ with gr.Blocks(
 # Launch
 # ===============================
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(server_name='0.0.0.0', server_port='7860')

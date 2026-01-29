@@ -50,7 +50,7 @@ This architecture is directly applicable to:
 
 ---
 
-## 🔄 End-to-End Workflow
+## 🔄 Benefits
 
 ### 1. Model Download (Hugging Face)
 
@@ -61,3 +61,6 @@ This architecture is directly applicable to:
 ```bash
 hf auth login
 hf download stabilityai/stablelm-3b-4e1t --local-dir stablelm-3b
+
+
+

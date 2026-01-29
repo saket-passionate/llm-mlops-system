@@ -13,6 +13,10 @@ app = FastAPI()
 MODEL_OBJECT = None
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
+
+# --- BitsAndBytes Configuration ---
+# Define 4-bit quantization configuration
+
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_quant_type="nf4",

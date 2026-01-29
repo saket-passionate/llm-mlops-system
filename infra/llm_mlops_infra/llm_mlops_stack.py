@@ -9,7 +9,9 @@ from aws_cdk import (
     aws_codepipeline_actions as codepipeline_actions,
     RemovalPolicy
     )
-from constructs import Construct    
+from constructs import Construct
+
+from llm_mlops_infra.ecs_gradio_stack import GradioEcsStack    
 
 class LLmMlopsStack(Stack):
 
@@ -94,6 +96,49 @@ class LLmMlopsStack(Stack):
                     "iam:PassRole",
                 ],
                 resources=["*"]
+            )
+        )
+
+        # CodeBuild Project to build and push ECS GradioDocker image to ECR
+        codebuild_gradio_job = codebuild.Project(
+            self, "GradioDockerBuild",
+            source=codebuild.Source.git_hub(
+                owner="saket-passionate",
+                repo="llm-mlops-system",
+                branch_or_ref="main",
+            ),
+            environment=codebuild.BuildEnvironment(
+                build_image=codebuild.LinuxBuildImage.STANDARD_6_0,
+                privileged=True
+            ),
+            build_spec=codebuild.BuildSpec.from_source_filename(
+                "infra/gradio_image_buildspec.yml"
+            ),
+            environment_variables={
+                "ECR_REPOSITORY": codebuild.BuildEnvironmentVariable(
+                    value="gradio-sagemaker-inference"
+                ),
+                "AWS_ACCOUNT_ID": codebuild.BuildEnvironmentVariable(
+                    value=self.account
+                ),      
+                "REGION": codebuild.BuildEnvironmentVariable(
+                    value=self.region
+                ),
+                "IMAGE_NAME": codebuild.BuildEnvironmentVariable(
+                    value="gradio-UI"
+                )
+            }
+        )
+
+        codebuild_gradio_job.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "ecr:GetAuthorizationToken",
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:BatchGetImage",
+                ],
+                resources=["*"],    
             )
         )
 
@@ -188,7 +233,7 @@ class LLmMlopsStack(Stack):
         source_output = codepipeline.Artifact()
 
         pipeline = codepipeline.Pipeline(
-            self, "LLMCodePipeline",
+            self, "GenAICodePipeline",
             
             stages=[
                 codepipeline.StageProps(
@@ -215,6 +260,17 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),
+                codepipeline.StageProps(
+                    stage_name="BuildAndPushGradioImage",
+                    actions=[
+                        codepipeline_actions.CodeBuildAction(
+                            action_name="BuildAndPushGradioImage",
+                            project=codebuild_gradio_job,
+                            input=source_output, 
+                        )
+                    ],
+                ),
+
                 codepipeline.StageProps(
                     stage_name="DownloadAndPackageModel",
                     actions=[
