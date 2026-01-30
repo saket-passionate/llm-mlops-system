@@ -227,6 +227,9 @@ class LLmMlopsStack(Stack):
                     "codeconnections:GetConnection",
                     "codeconnections:GetConnectionToken",
                     "codeconnections:UseConnection",
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:ListBucket",
                     ],
                     resources=[
                         "*"
