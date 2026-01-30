@@ -434,7 +434,7 @@ class LLmMlopsStack(Stack):
                 ],
                 resources=["*"],
             )
-        )
+        )   
 
         # Output
         self.gradio_service_url = load_balanced_fargate_service.load_balancer.load_balancer_dns_name
