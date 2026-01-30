@@ -253,7 +253,7 @@ class LLmMlopsStack(Stack):
         source_output = codepipeline.Artifact()
 
         pipeline = codepipeline.Pipeline(
-            self, "GenAILLMCodePipeline",
+            self, "LLMCodePipeline",
             
             stages=[
                 codepipeline.StageProps(
@@ -394,7 +394,7 @@ class LLmMlopsStack(Stack):
         
            
         # ECS Service with Application Load Balancer
-        fargate_service = ecs_patterns.ApplicationLoadBalancedFargateService(
+        load_balanced_fargate_service = ecs_patterns.ApplicationLoadBalancedFargateService(
             self,
             "GradioFargateService",
             cluster=cluster,
@@ -403,21 +403,41 @@ class LLmMlopsStack(Stack):
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
                 image=ecs.ContainerImage.from_ecr_repository(ecr_gradio_repository, tag="latest"),
                 container_port=7860,
+                environment={
+                    "SAGEMAKER_ENDPOINT_NAME": "stablelm-3b-endpoint",
+                    "AWS_REGION": "ca-central-1",
+                },
+
             ),
             public_load_balancer=True,
             listener_port=80,
             desired_count=1,
         )
 
-        fargate_service.target_group.configure_health_check(
-            path="/ping",
+        load_balanced_fargate_service.target_group.configure_health_check(
+            path="/",
             healthy_http_codes="200",
             unhealthy_threshold_count=2,
             healthy_threshold_count=2,
         )
 
+        load_balanced_fargate_service.task_definition.add_to_task_role_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "sagemaker:InvokeEndpoint",
+                    "ecr:GetAuthorizationToken",
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:BatchGetImage",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                ],
+                resources=["*"],
+            )
+        )
+
         # Output
-        self.gradio_service_url = fargate_service.load_balancer.load_balancer_dns_name
+        self.gradio_service_url = load_balanced_fargate_service.load_balancer.load_balancer_dns_name
 
         
 
