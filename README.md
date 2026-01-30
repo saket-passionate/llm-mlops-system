@@ -11,7 +11,7 @@ It is a **real, deployable LLM system** designed for scalability, and reliabilit
 
 ## 🏗️ System Architecture
 
-![System Architecture Diagram](llm_system_diagram.png)
+![System Architecture Diagram](llm_system_architecture.png)
 
 ## 🚀 What This System Does
 
