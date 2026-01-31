@@ -4,7 +4,7 @@ set -e
 # ----------- VARIABLES ----------
 echo "🚀 Welcome to the StableLM-3B model downloader!"
 
-echo "S3 Model Path is: $S3_MODEL_PATH"
+echo "S3 Model Path is: s3://${MODEL_BUCKET_NAME}/models/stablelm-3b/stable-3b-model.tar.gz"
 cd $CODEBUILD_SRC_DIR
 
 # Clean workspace
@@ -16,7 +16,7 @@ echo "📍 Working directory: $(pwd)"
 
 # ---------- CHECK S3 ----------
 echo "🔍 Checking if model already exists in S3..."
-if aws s3 ls "$S3_MODEL_PATH" > /dev/null 2>&1; then
+if aws s3 ls s3://${MODEL_BUCKET_NAME}/models/stablelm-3b/stable-3b-model.tar.gz > /dev/null 2>&1; then
     echo "✅ Model already exists in S3. Skipping download."
     exit 0
 else
