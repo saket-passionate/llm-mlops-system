@@ -1,13 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    REGION: "ca-central-1"
-    ECR_REPOSITORY: "stablelm-3b-inference"
-    IMAGE_REPO_NAME: "stablelm-3b-inference"
-    AWS_ACCOUNT_ID: "252312373833"
-    MODEL_BUCKET_NAME: "llmmlopsstack-llmmodelbucketece4678b-w6dy6zds3hxs"
-
 phases:
   pre_build:
     commands: 

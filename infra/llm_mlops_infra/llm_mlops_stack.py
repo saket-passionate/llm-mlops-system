@@ -101,6 +101,8 @@ class LLmMlopsStack(Stack):
                     "sagemaker:DeleteModel",
                     "sagemaker:DeleteEndpointConfig",
                     "sagemaker:DeleteEndpoint"
+                    "sagemaker:ListEndpoints",
+                    "sagemaker:InvokeEndpoint"
                 ],
                 resources=["*"],
             )
@@ -190,8 +192,11 @@ class LLmMlopsStack(Stack):
                 ),
                 "IMAGE_NAME": codebuild.BuildEnvironmentVariable(
                     value="stablelm-3b-inference"
-                )
-
+                ),
+                "MODEL_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
+                    value=model_bucket.bucket_name
+                ),  
+                
             }
         )
 
