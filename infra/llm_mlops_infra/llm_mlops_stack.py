@@ -101,8 +101,6 @@ class LLmMlopsStack(Stack):
                     "sagemaker:DeleteModel",
                     "sagemaker:DeleteEndpointConfig",
                     "sagemaker:DeleteEndpoint"
-                    "sagemaker:ListEndpoints",
-                    "sagemaker:InvokeEndpoint"
                 ],
                 resources=["*"],
             )
@@ -261,7 +259,7 @@ class LLmMlopsStack(Stack):
         source_output = codepipeline.Artifact()
 
         pipeline = codepipeline.Pipeline(
-            self, "LLMCodePipeline",
+            self, "GenAI CodePipeline",
             
             stages=[
                 codepipeline.StageProps(

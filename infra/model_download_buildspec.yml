@@ -11,7 +11,7 @@ phases:
       - echo Build started on `date`
       - echo Downloading and packaging the model...
       - echo clean working directory
-      - bash scripts/package_model.sh $S3_MODEL_PATH
+      - bash scripts/package_model.sh $MODEL_BUCKET_NAME 
       - echo Model packaging completed.
 
   
