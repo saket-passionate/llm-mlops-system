@@ -68,18 +68,7 @@ def handler(event, context):
             },
         ]
     )
-    print("Endpoint configuration created.")
-
-    # Check if endpoint exists and delete
-    try:
-        sagemaker.delete_endpoint(EndpointName=ENDPOINT_NAME)
-        print("Endpoint deleted.")
-        time.sleep(120)  # Wait for deletion to complete
-    except sagemaker.exceptions.ClientError as e:
-        if "Could not find endpoint" in str(e):
-            print("Endpoint does not exist, skipping deletion.")
-        else:
-            raise       
+    print("Endpoint configuration created.")   
 
     # Create Endpoint
     print("Creating SageMaker endpoint...")
