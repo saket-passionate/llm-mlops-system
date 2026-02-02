@@ -220,9 +220,6 @@ class LLmMlopsStack(Stack):
                 "S3_MODEL_PATH": codebuild.BuildEnvironmentVariable(
                     value="s3://{model_bucket.bucket_name}/models/stablelm-3b/stable-3b-model.tar.gz"
                 ),
-                "MODEL_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
-                    value=model_bucket.bucket_name
-                ), 
             }
         )
         
@@ -277,18 +274,8 @@ class LLmMlopsStack(Stack):
                             branch="main",
                         )
                     ],
-                ),      
-                codepipeline.StageProps(
-                    stage_name="BuildAndPushGradioImage",
-                    actions=[
-                        codepipeline_actions.CodeBuildAction(
-                            action_name="BuildAndPushGradioImage",
-                            project=codebuild_gradio_job,
-                            input=source_output, 
-                        )
-                    ],
                 ),
-                
+
                 codepipeline.StageProps(
                     stage_name="BuildAndPushDockerImage",
                     actions=[
@@ -299,7 +286,7 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),
-                """
+
                 codepipeline.StageProps(
                     stage_name="DownloadAndPackageModel",
                     actions=[
@@ -310,7 +297,6 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),
-                """
 
             codepipeline.StageProps(
                 stage_name="DeploySageMakerEndpoint",
@@ -319,6 +305,17 @@ class LLmMlopsStack(Stack):
                         action_name="DeploySageMakerEndpoint",
                         lambda_=lambda_fn
                        )
+                    ],
+                ),
+
+            codepipeline.StageProps(
+                    stage_name="BuildAndPushGradioImage",
+                    actions=[
+                        codepipeline_actions.CodeBuildAction(
+                            action_name="BuildAndPushGradioImage",
+                            project=codebuild_gradio_job,
+                            input=source_output, 
+                        )
                     ],
                 )
             ]
@@ -353,9 +350,9 @@ class LLmMlopsStack(Stack):
             )
         )
 
-        """
+
         # Create ECS Gradio Stack
-       
+        """
         # VPC
         vpc = ec2.Vpc(self, "GradioVpc", max_azs=2, nat_gateways=1)
 
@@ -448,8 +445,8 @@ class LLmMlopsStack(Stack):
 
         # Output
         self.gradio_service_url = load_balanced_fargate_service.load_balancer.load_balancer_dns_name
-
         """
+        
 
 
 
