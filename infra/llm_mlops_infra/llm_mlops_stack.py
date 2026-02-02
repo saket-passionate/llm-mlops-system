@@ -278,8 +278,17 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),      
-        
-
+                codepipeline.StageProps(
+                    stage_name="BuildAndPushGradioImage",
+                    actions=[
+                        codepipeline_actions.CodeBuildAction(
+                            action_name="BuildAndPushGradioImage",
+                            project=codebuild_gradio_job,
+                            input=source_output, 
+                        )
+                    ],
+                ),
+                
                 codepipeline.StageProps(
                     stage_name="BuildAndPushDockerImage",
                     actions=[
@@ -290,7 +299,7 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),
-
+                """
                 codepipeline.StageProps(
                     stage_name="DownloadAndPackageModel",
                     actions=[
@@ -301,6 +310,7 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),
+                """
 
             codepipeline.StageProps(
                 stage_name="DeploySageMakerEndpoint",
@@ -310,18 +320,7 @@ class LLmMlopsStack(Stack):
                         lambda_=lambda_fn
                        )
                     ],
-                ),
-
-            codepipeline.StageProps(
-                    stage_name="BuildAndPushGradioImage",
-                    actions=[
-                        codepipeline_actions.CodeBuildAction(
-                            action_name="BuildAndPushGradioImage",
-                            project=codebuild_gradio_job,
-                            input=source_output, 
-                        )
-                    ],
-                ),
+                )
             ]
         )
 
@@ -354,7 +353,7 @@ class LLmMlopsStack(Stack):
             )
         )
 
-
+        """
         # Create ECS Gradio Stack
        
         # VPC
@@ -450,7 +449,7 @@ class LLmMlopsStack(Stack):
         # Output
         self.gradio_service_url = load_balanced_fargate_service.load_balancer.load_balancer_dns_name
 
-        
+        """
 
 
 
