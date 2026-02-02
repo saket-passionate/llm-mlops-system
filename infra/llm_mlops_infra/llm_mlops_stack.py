@@ -278,16 +278,7 @@ class LLmMlopsStack(Stack):
                         )
                     ],
                 ),      
-                codepipeline.StageProps(
-                    stage_name="BuildAndPushGradioImage",
-                    actions=[
-                        codepipeline_actions.CodeBuildAction(
-                            action_name="BuildAndPushGradioImage",
-                            project=codebuild_gradio_job,
-                            input=source_output, 
-                        )
-                    ],
-                ),
+        
 
                 codepipeline.StageProps(
                     stage_name="BuildAndPushDockerImage",
@@ -319,7 +310,18 @@ class LLmMlopsStack(Stack):
                         lambda_=lambda_fn
                        )
                     ],
-                )
+                ),
+
+            codepipeline.StageProps(
+                    stage_name="BuildAndPushGradioImage",
+                    actions=[
+                        codepipeline_actions.CodeBuildAction(
+                            action_name="BuildAndPushGradioImage",
+                            project=codebuild_gradio_job,
+                            input=source_output, 
+                        )
+                    ],
+                ),
             ]
         )
 
