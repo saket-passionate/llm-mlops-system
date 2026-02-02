@@ -220,6 +220,9 @@ class LLmMlopsStack(Stack):
                 "S3_MODEL_PATH": codebuild.BuildEnvironmentVariable(
                     value="s3://{model_bucket.bucket_name}/models/stablelm-3b/stable-3b-model.tar.gz"
                 ),
+                "MODEL_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
+                    value=model_bucket.bucket_name
+                ),
             }
         )
         
